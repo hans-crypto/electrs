@@ -968,10 +968,13 @@ fn handle_request(
             None,
         ) => {
             let script_hash = to_scripthash(script_type, script_str, config.network_type)?;
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_default_max_mempool_txs);
+            let max_txs = cmp::min(
+                config.rest_default_max_mempool_txs,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_default_max_mempool_txs),
+            );
             let after_txid = query_params
                 .get("after_txid")
                 .and_then(|s| s.parse::<Txid>().ok());
@@ -1070,10 +1073,13 @@ fn handle_request(
                 })
                 .collect();
 
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_default_max_mempool_txs);
+            let max_txs = cmp::min(
+                config.rest_default_max_mempool_txs,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_default_max_mempool_txs),
+            );
             let after_txid = query_params
                 .get("after_txid")
                 .and_then(|s| s.parse::<Txid>().ok());
@@ -1158,10 +1164,13 @@ fn handle_request(
         ) => {
             let script_hash = to_scripthash(script_type, script_str, config.network_type)?;
             let last_seen_txid = last_seen_txid.and_then(|txid| txid.parse::<Txid>().ok());
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_default_chain_txs_per_page);
+            let max_txs = cmp::min(
+                config.rest_default_chain_txs_per_page,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_default_chain_txs_per_page),
+            );
 
             let mut txs = query
                 .chain()
@@ -1336,10 +1345,13 @@ fn handle_request(
             None,
         ) => {
             let script_hash = to_scripthash(script_type, script_str, config.network_type)?;
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_default_max_mempool_txs);
+            let max_txs = cmp::min(
+                config.rest_default_max_mempool_txs,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_default_max_mempool_txs),
+            );
 
             let txs = query
                 .mempool()
@@ -1729,10 +1741,13 @@ fn handle_request(
         }
         (&Method::GET, Some(&"mempool"), Some(&"txids"), Some(&"page"), last_seen_txid, None) => {
             let last_seen_txid = last_seen_txid.and_then(|txid| txid.parse::<Txid>().ok());
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_max_mempool_txid_page_size);
+            let max_txs = cmp::min(
+                config.rest_max_mempool_txid_page_size,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_max_mempool_txid_page_size),
+            );
             json_response(
                 query.mempool().txids_page(max_txs, last_seen_txid),
                 TTL_SHORT,
@@ -1787,10 +1802,13 @@ fn handle_request(
             None,
         ) => {
             let last_seen_txid = last_seen_txid.and_then(|txid| txid.parse::<Txid>().ok());
-            let max_txs = query_params
-                .get("max_txs")
-                .and_then(|s| s.parse::<usize>().ok())
-                .unwrap_or(config.rest_max_mempool_page_size);
+            let max_txs = cmp::min(
+                config.rest_max_mempool_page_size,
+                query_params
+                    .get("max_txs")
+                    .and_then(|s| s.parse::<usize>().ok())
+                    .unwrap_or(config.rest_max_mempool_page_size),
+            );
             let txs = query
                 .mempool()
                 .txs_page(max_txs, last_seen_txid)
